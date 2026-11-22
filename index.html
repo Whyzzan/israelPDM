@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16324f">
+  <title>Cadastro de Alunos</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root {
+      --azul: #16324f;
+      --azul2: #245a8d;
+      --fundo: #eef2f6;
+      --cartao: #ffffff;
+      --texto: #16222e;
+      --suave: #5b6b7b;
+      --linha: #d5dde6;
+      --ok: #1d7a4d;
+      --erro: #b3261e;
+      --dest: #f2b705;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fundo: #0e1a26;
+        --cartao: #162634;
+        --texto: #e8eef4;
+        --suave: #9fb0c0;
+        --linha: #2b4054;
+        --azul2: #6fb1ea
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      line-height: 1.45;
+      padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px))
+    }
+
+    header {
+      background: var(--azul);
+      color: #fff;
+      padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 14px
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem
+    }
+
+    header p {
+      margin: 2px 0 0;
+      font-size: .85rem;
+      opacity: .8
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 14px
+    }
+
+    section {
+      display: none
+    }
+
+    section.ativa {
+      display: block
+    }
+
+    .card {
+      background: var(--cartao);
+      border: 1px solid var(--linha);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: .9rem;
+      margin: 12px 0 4px
+    }
+
+    input,
+    select {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      padding: 12px;
+      border: 1.5px solid var(--linha);
+      border-radius: 10px;
+      background: var(--cartao);
+      color: var(--texto)
+    }
+
+    input:focus,
+    select:focus,
+    button:focus-visible {
+      outline: 3px solid var(--dest);
+      outline-offset: 1px
+    }
+
+    .erro-msg {
+      color: var(--erro);
+      font-size: .8rem;
+      min-height: 1em;
+      margin-top: 3px
+    }
+
+    input.invalido {
+      border-color: var(--erro)
+    }
+
+    .linha2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0 12px
+    }
+
+    @media (min-width:520px) {
+      .linha2 {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    button {
+      font: inherit;
+      font-weight: 700;
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 16px;
+      cursor: pointer;
+      min-height: 48px
+    }
+
+    .btn {
+      background: var(--azul);
+      color: #fff;
+      width: 100%;
+      margin-top: 16px
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .btn {
+        background: #2d6ea8
+      }
+    }
+
+    .btn2 {
+      background: transparent;
+      color: var(--azul2);
+      border: 1.5px solid var(--azul2);
+      width: auto;
+      padding: 8px 12px;
+      min-height: 40px;
+      font-size: .85rem
+    }
+
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .resumo div {
+      background: var(--cartao);
+      border: 1px solid var(--linha);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center
+    }
+
+    .resumo b {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--azul2)
+    }
+
+    .resumo span {
+      font-size: .75rem;
+      color: var(--suave)
+    }
+
+    .aluno {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start
+    }
+
+    .avatar {
+      flex: 0 0 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700
+    }
+
+    .aluno h3 {
+      margin: 0;
+      font-size: 1rem
+    }
+
+    .aluno p {
+      margin: 2px 0;
+      font-size: .85rem;
+      color: var(--suave);
+      word-break: break-word
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--dest);
+      color: #1b1b1b;
+      border-radius: 6px;
+      padding: 1px 8px;
+      font-size: .75rem;
+      font-weight: 700
+    }
+
+    .acoes {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap
+    }
+
+    .vazio {
+      text-align: center;
+      color: var(--suave);
+      padding: 28px 10px
+    }
+
+    .barra {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px
+    }
+
+    .barra input {
+      flex: 1
+    }
+
+    nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--cartao);
+      border-top: 1px solid var(--linha);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    nav button {
+      background: none;
+      color: var(--suave);
+      border-radius: 0;
+      padding: 14px 8px;
+      min-height: 56px
+    }
+
+    nav button.ativa {
+      color: var(--azul2);
+      box-shadow: inset 0 3px 0 var(--azul2)
+    }
+
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%);
+      background: var(--ok);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      max-width: 90%;
+      text-align: center
+    }
+
+    #toast.mostra {
+      opacity: 1
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      #toast {
+        transition: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Cadastro de Alunos</h1>
+    <p>PDM · cadastre e consulte o relatório</p>
+  </header>
+
+  <main>
+    <section id="tela-cadastro" class="ativa">
+      <form id="form" class="card" novalidate>
+        <label for="nome">Nome completo</label>
+        <input id="nome" autocomplete="name" placeholder="Ex.: Maria da Silva">
+        <div class="erro-msg" data-erro="nome"></div>
+
+        <label for="email">E-mail</label>
+        <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="maria@email.com">
+        <div class="erro-msg" data-erro="email"></div>
+
+        <div class="linha2">
+          <div>
+            <label for="telefone">Telefone</label>
+            <input id="telefone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(21) 99999-9999"
+              maxlength="15">
+            <div class="erro-msg" data-erro="telefone"></div>
+          </div>
+          <div>
+            <label for="nascimento">Data de nascimento</label>
+            <input id="nascimento" type="date">
+            <div class="erro-msg" data-erro="nascimento"></div>
+          </div>
+        </div>
+
+        <label for="curso">Curso</label>
+        <select id="curso">
+          <option value="">Selecione</option>
+          <option>Informática</option>
+          <option>Administração</option>
+          <option>Eletro Mecânica</option>
+          <option>Enfermagem</option>
+          <option>Segurança do Trabalho</option>
+          <option>Química</option>
+        </select>
+        <div class="erro-msg" data-erro="curso"></div>
+
+        <button class="btn" type="submit">Salvar cadastro</button>
+      </form>
+    </section>
+
+    <section id="tela-relatorio">
+      <div class="resumo">
+        <div><b id="r-total">0</b><span>cadastrados</span></div>
+        <div><b id="r-idade">–</b><span>idade média</span></div>
+        <div><b id="r-curso">–</b><span>curso mais comum</span></div>
+      </div>
+      <div class="barra">
+        <input id="busca" type="search" placeholder="Buscar por nome ou curso">
+        <button class="btn2" id="limpar" type="button">Limpar tudo</button>
+      </div>
+      <div id="lista"></div>
+    </section>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <nav>
+    <button id="nav-cadastro" class="ativa" type="button">Cadastro</button>
+    <button id="nav-relatorio" type="button">Relatório</button>
+  </nav>
+
+  <script>
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+    (function () {
+      var CHAVE = "pdm_cadastros_v1";
+      var $ = function (id) { return document.getElementById(id); };
+
+      function carregar() {
+        try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch (e) { return []; }
+      }
+      function salvar(lista) {
+        try { localStorage.setItem(CHAVE, JSON.stringify(lista)); } catch (e) { }
+      }
+      var dados = carregar();
+      (function () {
+        var h = new Date();
+        function fmt(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+        $("nascimento").max = fmt(h);
+        $("nascimento").min = fmt(new Date(h.getFullYear() - 100, h.getMonth(), h.getDate()));
+      })();
+
+      function esc(t) {
+        return String(t).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function dataLocal(iso) {
+        var p = iso.split("-");
+        return new Date(+p[0], +p[1] - 1, +p[2]);
+      }
+      function idade(iso) {
+        var n = dataLocal(iso), h = new Date();
+        var i = h.getFullYear() - n.getFullYear();
+        var m = h.getMonth() - n.getMonth();
+        if (m < 0 || (m === 0 && h.getDate() < n.getDate())) i--;
+        return i;
+      }
+      function dataBR(iso) { var p = iso.split("-"); return p[2] + "/" + p[1] + "/" + p[0]; }
+      function toast(msg) {
+        var t = $("toast"); t.textContent = msg; t.classList.add("mostra");
+        setTimeout(function () { t.classList.remove("mostra"); }, 2200);
+      }
+
+      // Navegação
+      function ir(tela) {
+        $("tela-cadastro").classList.toggle("ativa", tela === "cadastro");
+        $("tela-relatorio").classList.toggle("ativa", tela === "relatorio");
+        $("nav-cadastro").classList.toggle("ativa", tela === "cadastro");
+        $("nav-relatorio").classList.toggle("ativa", tela === "relatorio");
+        if (tela === "relatorio") desenhar();
+        window.scrollTo(0, 0);
+      }
+      $("nav-cadastro").onclick = function () { ir("cadastro"); };
+      $("nav-relatorio").onclick = function () { ir("relatorio"); };
+
+      // Máscara de telefone
+      $("telefone").addEventListener("input", function () {
+        var v = this.value.replace(/\D/g, "").slice(0, 11);
+        if (v.length > 6) v = "(" + v.slice(0, 2) + ") " + v.slice(2, v.length > 10 ? 7 : 6) + "-" + v.slice(v.length > 10 ? 7 : 6);
+        else if (v.length > 2) v = "(" + v.slice(0, 2) + ") " + v.slice(2);
+        else if (v.length) v = "(" + v;
+        this.value = v;
+      });
+
+      // Validação
+      function erro(campo, msg) {
+        document.querySelector('[data-erro="' + campo + '"]').textContent = msg || "";
+        $(campo).classList.toggle("invalido", !!msg);
+        return !msg;
+      }
+      function validar() {
+        var ok = true;
+        var nome = $("nome").value.trim();
+        ok = erro("nome", nome.split(/\s+/).length < 2 ? "Digite nome e sobrenome." : "") && ok;
+        ok = erro("email", /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("email").value.trim()) ? "" : "Digite um e-mail válido.") && ok;
+        var tel = $("telefone").value.replace(/\D/g, "");
+        ok = erro("telefone", tel.length < 10 ? "Digite DDD e número." : "") && ok;
+        var nasc = $("nascimento").value;
+        var msgN = "";
+        var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+        var limite = new Date(hoje.getFullYear() - 100, hoje.getMonth(), hoje.getDate());
+        if (!nasc) msgN = "Informe a data.";
+        else if (dataLocal(nasc) > hoje) msgN = "A data não pode ser futura.";
+        else if (dataLocal(nasc) < limite) msgN = "A idade não pode passar de 100 anos.";
+        ok = erro("nascimento", msgN) && ok;
+        ok = erro("curso", $("curso").value ? "" : "Escolha um curso.") && ok;
+        return ok;
+      }
+
+      $("form").addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        if (!validar()) { toast("Corrija os campos destacados."); document.querySelector(".invalido").focus(); return; }
+        var email = $("email").value.trim().toLowerCase();
+        if (dados.some(function (d) { return d.email === email; })) {
+          erro("email", "Este e-mail já está cadastrado."); return;
+        }
+        dados.unshift({
+          id: Date.now(),
+          nome: $("nome").value.trim(),
+          email: email,
+          telefone: $("telefone").value,
+          nascimento: $("nascimento").value,
+          curso: $("curso").value
+        });
+        salvar(dados);
+        this.reset();
+        toast("Cadastro salvo!");
+        ir("relatorio");
+      });
+
+      // Relatório
+      function desenhar() {
+        var termo = $("busca").value.trim().toLowerCase();
+        var lista = dados.filter(function (d) {
+          return !termo || d.nome.toLowerCase().indexOf(termo) > -1 || d.curso.toLowerCase().indexOf(termo) > -1;
+        });
+
+        $("r-total").textContent = dados.length;
+        if (dados.length) {
+          var soma = dados.reduce(function (s, d) { return s + idade(d.nascimento); }, 0);
+          $("r-idade").textContent = Math.round(soma / dados.length);
+          var cont = {}; dados.forEach(function (d) { cont[d.curso] = (cont[d.curso] || 0) + 1; });
+          var top = Object.keys(cont).sort(function (a, b) { return cont[b] - cont[a]; })[0];
+          $("r-curso").textContent = top;
+          $("r-curso").style.fontSize = top.length > 8 ? "1rem" : "1.5rem";
+        } else {
+          $("r-idade").textContent = "–"; $("r-curso").textContent = "–";
+        }
+
+        if (!lista.length) {
+          $("lista").innerHTML = '<div class="vazio">' + (dados.length ? "Nada encontrado para essa busca." : "Nenhum cadastro ainda. Use a aba Cadastro para adicionar o primeiro.") + "</div>";
+          return;
+        }
+        $("lista").innerHTML = lista.map(function (d) {
+          return '<article class="card aluno">' +
+            '<div class="avatar" aria-hidden="true">' + esc(d.nome.charAt(0).toUpperCase()) + '</div>' +
+            '<div style="flex:1;min-width:0">' +
+            '<h3>' + esc(d.nome) + '</h3>' +
+            '<p><span class="tag">' + esc(d.curso) + '</span></p>' +
+            '<p>' + esc(d.email) + '</p>' +
+            '<p>' + esc(d.telefone) + ' · ' + dataBR(d.nascimento) + ' (' + idade(d.nascimento) + ' anos)</p>' +
+            '<div class="acoes"><button class="btn2" type="button" data-del="' + d.id + '">Excluir</button></div>' +
+            '</div></article>';
+        }).join("");
+      }
+
+      $("busca").addEventListener("input", desenhar);
+      $("lista").addEventListener("click", function (ev) {
+        var id = ev.target.getAttribute("data-del");
+        if (!id) return;
+        if (confirm("Excluir este cadastro?")) {
+          dados = dados.filter(function (d) { return String(d.id) !== id; });
+          salvar(dados); desenhar(); toast("Cadastro excluído.");
+        }
+      });
+      $("limpar").onclick = function () {
+        if (dados.length && confirm("Apagar todos os cadastros?")) {
+          dados = []; salvar(dados); desenhar(); toast("Tudo apagado.");
+        }
+      };
+    })();
+  </script>
+</body>
+
+</html>
